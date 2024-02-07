@@ -4,7 +4,7 @@ wdir=$(pwd)
 if [ ! -d "$wdir/nethunter" ]; then
     mkdir nethunter
     cd nethunter || exit
-    wget "https://raw.githubusercontent.com/ravindu644/android_kernel_apatch_nh_beyondx/Nethunter/nethunter/Kconfig"
+    wget "https://raw.githubusercontent.com/ravindu644/Simple-Android-Guides/nethunter/nethunter/Kconfig"
     cd "$wdir" || exit
 fi
 
