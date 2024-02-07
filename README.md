@@ -9,3 +9,4 @@
 04. [Git Basics for Newbies](https://github.com/ravindu644/Simple-Android-Guides/tree/cherry-pick).
 05. [Kernel Building Guide](https://github.com/ravindu644/Android-Kernel-Tutorials).
 06. [Exynos GCam Patch Guide](https://t.me/SamsungTweaks/186). \ [Mirror](https://t.me/Logs_R/75).
+07. [Making a nethunter compatible Kernel](https://github.com/ravindu644/Simple-Android-Guides/tree/nethunter).
