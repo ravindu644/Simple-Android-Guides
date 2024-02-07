@@ -80,3 +80,18 @@ git push origin BRANCH_NAME
 ```
 
 - Notes : you must add files and make a commit before uploading files.
+
+<hr>
+
+## Patch files guide :
+
+#### 01. To apply a patch file :
+```
+patch -p1 <  FILENAME_PATCH.patch
+```
+
+#### 02. To create a patch file using a certain github commit :
+```
+git checkout COMMIT_HASH
+git diff HEAD^ > filename.patch
+```   
