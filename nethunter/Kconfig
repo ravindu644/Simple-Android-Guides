@@ -1,0 +1,471 @@
+menu "Kali Nethunter Support"
+config NETHUNTER_SUPPORT
+	
+	bool "Enable basic Nethunter support"
+    default y	
+    help
+            This helps you to enable requirements for Nethunter.
+
+    select SYSVIPC
+    select REMOVE_ME
+    select MODULES
+    select USB_ACM    
+    select MODULE_FORCE_LOAD
+    select MODULE_UNLOAD
+    select MODULE_FORCE_UNLOAD
+    select MODVERSIONS
+    select BUILD_ARM64_APPENDED_DTB_IMAGE
+
+config NETHUNTER_CUSTOMISATION
+    bool "Enable custom names for your Kenel"
+    default y
+    depends on NETHUNTER_SUPPORT
+
+    config LOCALVERSION
+    depends on NETHUNTER_CUSTOMISATION
+    string "Custom Nethunter name"    
+    default "-Nethunter"
+
+    config DEFAULT_HOSTNAME
+    depends on NETHUNTER_CUSTOMISATION    
+    string "Host Name"        
+    default "kali"    
+
+menu "Remove Everything from THIS MENU ❌"
+config MEDIA_SUBDRV_AUTOSELECT
+    bool "Autoselect ancillary drivers (tuners, sensors, i2c, spi, frontends)"
+    default n
+
+config MODULE_SRCVERSION_ALL
+    bool "Source checksum for all modules"
+    default n
+
+config MODULE_SIG
+    bool "Module signature verification"   
+    default n
+
+menu "Remove Samsung Securities"    
+config UH
+    bool "Enable micro hypervisor feature"
+    default n
+
+config UH_LKMAUTH
+    bool "Enable LKM authentication by micro hypervisor"
+    default n
+
+config UH_LKM_BLOCK
+    bool "Block LKM by micro hypervisor"    
+    default n
+
+config RKP_CFP_JOPP
+    bool "JOP Prevention"
+    default n
+
+config RKP_CFP
+    bool "Control Flow Protection"   
+    default n
+
+config SECURITY_DEFEX
+    bool "Defex Support"
+    default n
+
+config FIVE        
+    bool "File Based Task Integrity Verifier (FIVE)(based on IMA)"
+    default n
+
+endmenu
+endmenu
+
+menu "Configuring the Kernel - Network"
+config NETHUNTER_NETWORK_SUPPORT
+		depends on NETHUNTER_SUPPORT
+	    bool "Enable Networking Support for Nethunter ✅"
+	    default n
+	    help
+            This helps you to enable Networking support for Nethunter.	    
+
+        config BT_HCIBTUSB
+            tristate "HCI USB driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT
+
+        config BT_HCIBTUSB_BCM
+            bool "Broadcom protocol support"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT
+
+        config BT_HCIBTUSB_RTL
+            bool "Realtek protocol support"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT
+
+        config BT_HCIUART
+            tristate "HCI UART driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT
+
+        config BT_HCIUART_H4
+            bool "UART (H4) protocol support"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT 
+
+        config BT_HCIBCM203X
+            tristate "HCI BCM203x USB driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT 
+
+        config BT_HCIBPA10X
+        tristate "HCI BPA10x USB driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config BT_HCIBFUSB
+            tristate "HCI BlueFRITZ! USB driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config BT_HCIVHCI
+            tristate "HCI VHCI (Virtual HCI device) driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT        
+
+        config ANDROID_BINDER_IPC
+            bool "Android Binder IPC Driver"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config CFG80211_WEXT
+            bool "cfg80211 wireless extensions compatibility"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config MAC80211
+            tristate "Generic IEEE 802.11 Networking Stack (mac80211)"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config MAC80211_MESH
+            bool "Enable mac80211 mesh networking (pre-802.11s) support"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT 
+
+        config USB_RTL8150
+            tristate "USB RTL8150 based ethernet device support"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT  
+
+        config USB_RTL8152
+            tristate "Realtek RTL8152/RTL8153 Based USB Ethernet Adapters"
+            default y
+            depends on NETHUNTER_NETWORK_SUPPORT
+
+endmenu                      
+
+menu "Configuring the Kernel - Wifi"
+config NETHUNTER_WIFI_SUPPORT
+		depends on NETHUNTER_SUPPORT
+	    bool "Enable WIFI Support for Nethunter"
+	    default n
+	    help
+            This helps you to enable WIFI support for Nethunter.	
+
+        config WLAN_VENDOR_ATH
+            bool "Atheros/Qualcomm devices"
+            default y
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config ATH9K_HTC
+            tristate "Atheros HTC based wireless cards support"
+            default y
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config CARL9170
+            default y
+            tristate "Linux Community AR9170 802.11n USB support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config ATH6KL
+            default y
+            tristate "Atheros mobile chipsets support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config ATH6KL_USB
+            default y
+            tristate "Atheros ath6kl USB support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config WLAN_VENDOR_MEDIATEK
+            default y
+            bool "MediaTek devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config MT7601U
+            default y
+            tristate "MediaTek MT7601U (USB) support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config WLAN_VENDOR_RALINK
+            default y
+            bool "Ralink devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2X00
+            default y
+            tristate "Ralink driver support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2500USB
+            default y
+            tristate "Ralink rt2500 (USB) support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT73USB
+            default y
+            tristate "Ralink rt2501/rt73 (USB)"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB
+            default y
+            tristate "Ralink rt27xx/rt28xx/rt30xx (USB)"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_RT33XX
+            default y
+            bool "rt2800usb - Include support for rt33xx devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_RT35XX
+            default y
+            bool "rt2800usb - Include support for rt35xx devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_RT3573
+            default y
+            bool "rt2800usb - Include support for rt3573 devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_RT53XX
+            default y
+            bool "rt2800usb - Include support for rt53xx devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_RT55XX
+            default y
+            bool "rt2800usb - Include support for rt55xx devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RT2800USB_UNKNOWN
+            default y
+            bool "rt2800usb - Include support for unknown (USB)"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config WLAN_VENDOR_REALTEK
+            default y
+            bool "Realtek devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RTL8187
+            default y
+            tristate "Realtek 8187 and 8187B USB support"
+            depends on NETHUNTER_WIFI_SUPPORT        
+
+        config RTL_CARDS
+            default y
+            tristate "Realtek rtlwifi family of devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RTL8192CU
+            default y
+            tristate "RTL8723AU/RTL8188[CR]U/RTL819[12]CU (mac80211) support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config RTL8XXXU_UNTESTED
+            default y
+            bool "Include support for untested Realtek 8xxx USB devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config WLAN_VENDOR_ZYDAS
+            default y
+            bool "ZyDAS devices"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config USB_ZD1201
+            default y
+            tristate "USB ZD1201 based Wireless device support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config ZD1211RW
+            default y
+            tristate "ZyDAS ZD1211/ZD1211B USB-wireless support"
+            depends on NETHUNTER_WIFI_SUPPORT
+
+        config USB_NET_RNDIS_WLAN
+            default y
+            tristate "Wireless RNDIS USB support"
+            depends on NETHUNTER_WIFI_SUPPORT
+endmenu
+
+menu "Configuring the Kernel - SDR"
+config NETHUNTER_SDR_SUPPORT
+		depends on NETHUNTER_SUPPORT
+	    bool "Enable SDR Support for Nethunter"
+	    default n
+	    help
+            This helps you to enable SDR support for Nethunter. 
+
+        config MEDIA_DIGITAL_TV_SUPPORT
+            default y
+            bool "Digital TV support"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config MEDIA_SDR_SUPPORT
+            default y
+            bool "Software defined radio support"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config USB_AIRSPY
+            default y
+            tristate "AirSpy"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config USB_HACKRF
+            default y
+            tristate "HackRF"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config USB_MSI2500
+            default y
+            tristate "Mirics MSi2500"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config DVB_RTL2830
+            default y
+            tristate "Realtek RTL2830 DVB-T"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config DVB_RTL2832
+            default y
+            tristate "Realtek RTL2832 DVB-T"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config DVB_RTL2832_SDR
+            default y
+            tristate "Realtek RTL2832 SDR"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config DVB_SI2168
+            default y
+            tristate "Silicon Labs Si2168"
+            depends on NETHUNTER_SDR_SUPPORT
+
+        config DVB_ZD1301_DEMOD
+            default y
+            tristate "ZyDAS ZD1301"
+            depends on NETHUNTER_SDR_SUPPORT
+
+endmenu                        
+
+menu "Configuring the 4.x Kernel - USB"
+config NETHUNTER_USB_SUPPORT
+		depends on NETHUNTER_SUPPORT
+	    bool "Enable USB Support for Nethunter"
+	    default n
+	    help
+            This helps you to enable USB support for Nethunter.
+
+        config USB_CONFIGFS_SERIAL
+            default y
+            bool "Generic serial bulk in/out"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_ACM
+            default y
+            bool "Abstract Control Model (CDC ACM)"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_OBEX
+            default y
+            bool "Object Exchange Model (CDC OBEX)"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_NCM
+            default y
+            bool "Network Control Model (CDC NCM)"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_ECM
+            default y
+            bool "Ethernet Control Model (CDC ECM)"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_ECM_SUBSET
+            default y
+            bool "Ethernet Control Model (CDC ECM) subset"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_RNDIS
+            default y
+            bool "RNDIS"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_EEM
+            default y
+            bool "Ethernet Emulation Model (EEM)"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_MASS_STORAGE
+            default y
+            bool "Mass Storage"
+            depends on NETHUNTER_USB_SUPPORT
+
+        config USB_CONFIGFS_F_HID
+            default y
+            bool "HID function"
+            depends on NETHUNTER_USB_SUPPORT
+endmenu
+menu "Configuring the Kernel - NFS"
+config NETHUNTER_NFS_SUPPORT
+        depends on NETHUNTER_SUPPORT
+        bool "Enable NFS Support for Nethunter"
+        default n
+        help
+            This helps you to enable NFS support for Nethunter.
+
+        config NETWORK_FILESYSTEMS
+            default y
+            bool "Network File Systems"
+            depends on NETHUNTER_NFS_SUPPORT
+
+        config NFS_V2
+            default y
+            tristate "NFS client support for NFS version 2"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+        config NFS_V3
+            default y
+            tristate "NFS client support for NFS version 3"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+        config NFS_V4
+            default y
+            tristate "NFS client support for NFS version 4"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+        config NFSD
+            default y
+            tristate "NFS server support"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+        config NFSD_V3
+            default y
+            bool "NFS server support for NFS version 3"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+        config NFSD_V4
+            default y
+            bool "NFS server support for NFS version 4"
+            depends on NETHUNTER_NFS_SUPPORT 
+
+endmenu
+endmenu
+       
