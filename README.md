@@ -13,3 +13,4 @@
 08. [Enable Missing ramdisk in the boot.img](https://github.com/ravindu644/android_kernel_beyondx/commit/1de22b7067d487e315e15bfb8619a43aaa99594f). (You have to port the boot.img from a device which already has a ramdisk. just replace the files in split_img with yours.)
 09. [Performance tweaks for Kernel](https://github.com/ravindu644/android_kernel_beyondx_lpos/commits/lpos-v8.4.1/).
 10. [Flashing / Dumping your Android partitions with root and termux](https://github.com/ravindu644/Simple-Android-Guides/tree/dd).
+11. [ANDROID GUIDE PDF](https://github.com/ravindu644/Simple-Android-Guides/blob/main/ANDROID_STUFFS.pdf).
