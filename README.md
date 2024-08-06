@@ -15,4 +15,6 @@
 10. [Flashing / Dumping your Android partitions with root and termux](https://github.com/ravindu644/Simple-Android-Guides/tree/dd).
 11. [ANDROID GUIDE PDF](https://github.com/ravindu644/Simple-Android-Guides/blob/main/ANDROID_STUFFS.pdf).
 12. [Custom Boot Animation guide](https://t.me/Logs_R/80).
-13. [Add KernelSU to your Kernel source (non gki)](https://github.com/ravindu644/android_kernel_beyondx/commit/d1c7c1650ba367825940c22ed2fc736cbb8dcc9b).
+13. [Add KernelSU to your Kernel source (non gki)](https://github.com/ravindu644/EternityKernel/commits/ksu-example/).
+
+- Note : just cherry pick those commits or manually edit your source to implement KSU :)
