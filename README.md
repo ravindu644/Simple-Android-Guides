@@ -9,7 +9,7 @@
 04. [Git Basics for Newbies](https://github.com/ravindu644/Simple-Android-Guides/tree/cherry-pick).
 05. [Kernel Building Guide](https://github.com/ravindu644/Android-Kernel-Tutorials).
 06. [Exynos GCam Patch Guide](https://t.me/SamsungTweaks/186). \ [Mirror](https://t.me/Logs_R/75).
-07. [Making a nethunter compatible Kernel](https://github.com/ravindu644/Simple-Android-Guides/tree/nethunter). \ [Nethunter Patches](https://github.com/ravindu644/android_kernel_beyondx_lpos/commits/Nethunter-beta/).
+07. [Making a nethunter compatible Kernel](https://github.com/ravindu644/Simple-Android-Guides/tree/nethunter). \ [Nethunter Patches](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel/-/tree/master/patches?ref_type=heads).
 08. [Enable Missing ramdisk in the boot.img](https://github.com/ravindu644/android_kernel_beyondx/commit/1de22b7067d487e315e15bfb8619a43aaa99594f). (You have to port the boot.img from a device which already has a ramdisk. just replace the files in split_img with yours.)
 09. [Performance tweaks for Kernel](https://github.com/ravindu644/android_kernel_beyondx_lpos/commits/lpos-v8.4.1/).
 10. [Flashing / Dumping your Android partitions with root and termux](https://github.com/ravindu644/Simple-Android-Guides/tree/dd).
