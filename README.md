@@ -5,7 +5,7 @@
 ## 01. Setup WSL and Install simg2img using this command :
 
 ```
-sudo apt update && sudo apt install simg2img
+sudo apt update && sudo apt install android-sdk-libsparse-utils
 ```
 
 ## 02. Change the working directory to your super.img's location.
