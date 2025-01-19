@@ -46,7 +46,7 @@ Both packages can be downloaded from the [official Nethunter Downloads page](htt
    - **Important:** Ensure your SD card has only one partition
 
 6. Flash the external SD card setup:
-   - Install [kali-external-sd_v2.zip](./res/kali-external-sd_v2.zip)
+   - Install [kali-external-sd_v2.zip](https://github.com/ravindu644/Simple-Android-Guides/raw/refs/heads/nethunter-externalsd/res/kali-external-sd_v2.zip)
    - Reboot your device
 
    ![External SD Setup](./res/3.png)
