@@ -56,8 +56,10 @@ Both packages can be downloaded from the [official Nethunter Downloads page](htt
    - Locate `kalifs-full-armhf.tar.xz` from the full package
    - Extract it to your device's internal storage
 
-8. Open a terminal and run these commands in order:
+8. Open adb shell from your pc and run these commands in order:
    ```bash
+   su
+
    busybox tar -xJf /sdcard/kalifs-full-armhf.tar.xz -C /data/local/nhsystem --exclude "kali-armhf/dev"
    
    ln -sf /data/local/nhsystem/kali-armhf /data/local/nhsystem/kalifs
