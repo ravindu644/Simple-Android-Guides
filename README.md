@@ -9,4 +9,4 @@ curl -sS https://raw.githubusercontent.com/ravindu644/Simple-Android-Guides/neth
 ### 04. [Kali Nethunter Kernel Patches](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel/-/tree/master/patches?ref_type=heads)
 ### 05. [Connecting to Kali Nethunter GUI using mobile hotspot and PC](https://telegra.ph/Connect-to-Kali-Nethunter-using-Mobile-Hotspot-to-your-PC-08-03)
 
-### 06. Installing nethunter to the SD card will be available soon..
+### 06. [Installing nethunter to the SD card in Galaxy A01](https://github.com/ravindu644/Simple-Android-Guides/tree/nethunter-externalsd)
