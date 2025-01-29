@@ -40,17 +40,17 @@
 # specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
 
 #<src>                                                 <mnt_point>            <type>  <mnt_flags and options>                            <fs_mgr_flags>
-system	/system	erofs	ro	wait,logical,first_stage_mount,avb=vbmeta_system,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey
-system	/system	f2fs	ro	wait,logical,first_stage_mount,avb=vbmeta_system,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey
-system	/system	ext4	ro	wait,logical,first_stage_mount,avb=vbmeta_system,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey
-system_ext	/system_ext	erofs	ro	wait,logical,first_stage_mount,avb=vbmeta_system
-product	/product	erofs	ro	wait,logical,first_stage_mount,avb=vbmeta_system
-vendor	/vendor	erofs	ro	wait,logical,first_stage_mount,avb
-vendor_dlkm	/vendor_dlkm	erofs	ro	wait,logical,first_stage_mount,avb
-system_dlkm	/system_dlkm	erofs	ro	wait,logical,first_stage_mount,avb
-system_dlkm	/system_dlkm	f2fs	ro	wait,logical,first_stage_mount,avb
-system_dlkm	/system_dlkm	ext4	ro	wait,logical,first_stage_mount,avb
-odm	/odm	erofs	ro	wait,logical,first_stage_mount,avb
+system	/system	erofs	ro	wait,logical,first_stage_mount
+system	/system	f2fs	ro	wait,logical,first_stage_mount
+system	/system	ext4	ro	wait,logical,first_stage_mount
+system_ext	/system_ext	erofs	ro	wait,logical,first_stage_mount
+product	/product	erofs	ro	wait,logical,first_stage_mount
+vendor	/vendor	erofs	ro	wait,logical,first_stage_mount
+vendor_dlkm	/vendor_dlkm	erofs	ro	wait,logical,first_stage_mount
+system_dlkm	/system_dlkm	erofs	ro	wait,logical,first_stage_mount
+system_dlkm	/system_dlkm	f2fs	ro	wait,logical,first_stage_mount
+system_dlkm	/system_dlkm	ext4	ro	wait,logical,first_stage_mount
+odm	/odm	erofs	ro	wait,logical,first_stage_mount
 /dev/block/bootdevice/by-name/cache	/cache	ext4	noatime,nosuid,nodev,noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic	wait,check
 /dev/block/by-name/metadata	/metadata	ext4	noatime,nosuid,nodev,noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic,sync	wait,check,formattable,first_stage_mount
 # Add fs_mgr flag - sysfs_path=/sys/devices/platform/soc/xxxx.[ufshc|sdhci] to userdata entry, based on UFS|eMMC device.
@@ -73,8 +73,8 @@ odm	/odm	erofs	ro	wait,logical,first_stage_mount,avb
 /dev/block/bootdevice/by-name/bluetooth	/vendor/bt_firmware	vfat	ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0	wait
 
 # CSC
-/dev/block/by-name/prism	/prism	ext4	ro,barrier=1	nofail,first_stage_mount,avb
-/dev/block/by-name/optics	/optics	ext4	ro,barrier=1	nofail,first_stage_mount,avb
+/dev/block/by-name/prism	/prism	ext4	ro,barrier=1	nofail,first_stage_mount
+/dev/block/by-name/optics	/optics	ext4	ro,barrier=1	nofail,first_stage_mount
 
 # VOLD:samsung/common/fstab.samsung
 /devices/platform/soc/4784000.sdhci/mmc_host*	auto	vfat	defaults	voldmanaged=sdcard:auto
