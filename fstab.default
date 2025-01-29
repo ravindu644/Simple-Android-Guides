@@ -7,18 +7,28 @@ system	/system	f2fs	ro	wait,logical,first_stage_mount
 system	/system	ext4	ro	wait,logical,first_stage_mount
 
 system_ext	/system_ext	erofs	ro	wait,logical,first_stage_mount
+system_ext	/system_ext	ext4	ro	wait,logical,first_stage_mount
+system_ext	/system_ext	f2fs	ro	wait,logical,first_stage_mount
 
 product	/product	erofs	ro	wait,logical,first_stage_mount
+product	/product	ext4	ro	wait,logical,first_stage_mount
+product	/product	f2fs	ro	wait,logical,first_stage_mount
 
 vendor	/vendor	erofs	ro	wait,logical,first_stage_mount
+vendor	/vendor	ext4	ro	wait,logical,first_stage_mount
+vendor	/vendor	f2fs	ro	wait,logical,first_stage_mount
 
 vendor_dlkm	/vendor_dlkm	erofs	ro	wait,logical,first_stage_mount
+vendor_dlkm	/vendor_dlkm	ext4	ro	wait,logical,first_stage_mount
+vendor_dlkm	/vendor_dlkm	f2fs	ro	wait,logical,first_stage_mount
 
 system_dlkm	/system_dlkm	erofs	ro	wait,logical,first_stage_mount
 system_dlkm	/system_dlkm	f2fs	ro	wait,logical,first_stage_mount
 system_dlkm	/system_dlkm	ext4	ro	wait,logical,first_stage_mount
 
 odm	/odm	erofs	ro	wait,logical,first_stage_mount
+odm	/odm	ext4	ro	wait,logical,first_stage_mount
+odm	/odm	f2fs	ro	wait,logical,first_stage_mount
 
 # END DYNAMIC PARTITIONS
 
