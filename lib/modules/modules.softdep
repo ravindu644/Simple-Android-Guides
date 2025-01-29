@@ -1,0 +1,12 @@
+# Soft dependencies extracted from modules themselves.
+softdep soc_sleep_stats pre: smem
+softdep nopmi_chg pre: upm6918_charger sm5602_fg 
+softdep sec_qc_summary pre: sec_arm64_ap_context
+softdep sec_qc_summary pre: sec_qc_logger
+softdep qmi_helpers pre: qrtr
+softdep smem pre: qcom_hwspinlock
+softdep goodixfp pre: msm_drm
+softdep dwc3_msm pre: phy-generic phy-msm-snps-hs phy-msm-ssusb-qmp eud
+softdep pinctrl_msm pre: qcom-pdc
+softdep leds_qti_tri_led pre: pwm-qti-lpg
+softdep arm_smmu pre: virt-arm-smmu-v3
