@@ -1,15 +1,27 @@
 #<src>                                                 <mnt_point>            <type>  <mnt_flags and options>                            <fs_mgr_flags>
+
+# START DYNAMIC PARTITIONS
+
 system	/system	erofs	ro	wait,logical,first_stage_mount
 system	/system	f2fs	ro	wait,logical,first_stage_mount
 system	/system	ext4	ro	wait,logical,first_stage_mount
+
 system_ext	/system_ext	erofs	ro	wait,logical,first_stage_mount
+
 product	/product	erofs	ro	wait,logical,first_stage_mount
+
 vendor	/vendor	erofs	ro	wait,logical,first_stage_mount
+
 vendor_dlkm	/vendor_dlkm	erofs	ro	wait,logical,first_stage_mount
+
 system_dlkm	/system_dlkm	erofs	ro	wait,logical,first_stage_mount
 system_dlkm	/system_dlkm	f2fs	ro	wait,logical,first_stage_mount
 system_dlkm	/system_dlkm	ext4	ro	wait,logical,first_stage_mount
+
 odm	/odm	erofs	ro	wait,logical,first_stage_mount
+
+# END DYNAMIC PARTITIONS
+
 /dev/block/bootdevice/by-name/cache	/cache	ext4	noatime,nosuid,nodev,noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic	wait,check
 /dev/block/by-name/metadata	/metadata	ext4	noatime,nosuid,nodev,noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic,sync	wait,check,formattable,first_stage_mount
 # Add fs_mgr flag - sysfs_path=/sys/devices/platform/soc/xxxx.[ufshc|sdhci] to userdata entry, based on UFS|eMMC device.
