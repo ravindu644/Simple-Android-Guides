@@ -33,8 +33,12 @@ on post-fs
     mkdir /config/usb_gadget/g1/functions/acm.gs1
     mkdir /config/usb_gadget/g1/functions/acm.gs2
     mkdir /config/usb_gadget/g1/functions/dm.gs3
-    mkdir /config/usb_gadget/g1/functions/mass_storage.usb0
-    mkdir /config/usb_gadget/g1/functions/hid.gs0
+    mkdir /config/usb_gadget/g1/functions/mass_storage.0
+    mkdir /config/usb_gadget/g1/functions/mass_storage.0/lun.0
+
+    # 1. Disable Samsung's default HID to free up hidg0
+    # mkdir /config/usb_gadget/g1/functions/hid.gs0
+
     mkdir /config/usb_gadget/g1/configs/b.1 0770 shell shell
     mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409 0770 shell shell
 
@@ -65,7 +69,7 @@ on boot
     setprop vendor.usb.acm_port0 0
     setprop vendor.usb.acm_port1 ""
     setprop vendor.usb.acm_enable 1
-    
+
     write /sys/class/android_usb/android0/f_mtp/cpu_mask 0x80
     write /sys/module/usb_f_mtp/parameters/mtp_rx_cont 1
     chmod 0664 /sys/class/android_usb/android0/iSerial
@@ -106,7 +110,7 @@ on charger
     write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
     write /config/usb_gadget/g1/strings/0x409/manufacturer "SAMSUNG"
     write /config/usb_gadget/g1/strings/0x409/product "SAMSUNG_Android"
-    mkdir /config/usb_gadget/g1/functions/hid.gs0
+    # mkdir /config/usb_gadget/g1/functions/hid.gs0
     mkdir /config/usb_gadget/g1/configs/b.1 0770 shell shell
     mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409 0770 shell shell
     write /config/usb_gadget/g1/configs/b.1/MaxPower 500
@@ -144,18 +148,6 @@ on property:sys.usb.config=none
     write /sys/class/udc/${vendor.usb.controller}/device/saving 0
     setprop sys.usb.state ${sys.usb.config}
 
-### HID for KPOC ###
-on property:sys.usb.config=hid
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "HID"
-    write /config/usb_gadget/g1/idProduct 0x20FF
-    write /config/usb_gadget/g1/functions/hid.gs0/protocol 0
-    write /config/usb_gadget/g1/functions/hid.gs0/subclass 0
-    #write /config/usb_gadget/g1/functions/hid.gs0/report_length 4
-    #write /config/usb_gadget/g1/functions/hid.gs0/report_desc \\x05\\x01\\x09\\x00\\xa1\\x01\\xc0
-    symlink /config/usb_gadget/g1/functions/hid.gs0 /config/usb_gadget/g1/configs/b.1/f1
-    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-    setprop sys.usb.state ${sys.usb.config}
-
 ### main function : adb ###
 on property:sys.usb.config=adb
     start adbd
@@ -174,19 +166,21 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
 
 on property:sys.usb.config=mtp
     setprop vendor.usb.state ${sys.usb.config}
-
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_acm"
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_acm_ums"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+    
+    # PAVE STEP: Build our desired configuration from scratch, in the correct order.
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port0} /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f3
+
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-
     setprop sys.usb.state ${sys.usb.config}
 
 ### start adbd at init.usb.configfs.rc ###
@@ -196,21 +190,23 @@ on property:sys.usb.config=mtp,adb
 # EXECUTES ON ONLY WHEN MTP + ADB SCENARIO
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_acm_adb"
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_acm_adb_ums"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
     setprop vendor.usb.state ${sys.usb.config}
 
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+    
+    # PAVE STEP: Build our desired configuration from scratch, in the correct order.
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port0} /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f3
-    symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f4
-    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f4
 
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-    
     setprop sys.usb.state ${sys.usb.config}
 
 ### main function : ptp ###
@@ -608,7 +604,7 @@ on property:sys.usb.config=mass_storage
     setprop vendor.usb.state ${sys.usb.config}
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums"
     write /config/usb_gadget/g1/idProduct 0x685B
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f2
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
     setprop sys.usb.state ${sys.usb.config}
@@ -620,7 +616,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums_adb"
     write /config/usb_gadget/g1/idProduct 0x685E
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
@@ -640,9 +636,9 @@ on property:sys.usb.config=bicr && property:vendor.usb.acm_enable=1
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums_acm"
     write /config/usb_gadget/g1/idProduct ${vendor.usb.pid}
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/cdrom 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/file "/dev/block/loop0"
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file "/dev/block/loop0"
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port0} /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port1} /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f4
@@ -652,9 +648,9 @@ on property:sys.usb.config=bicr && property:vendor.usb.acm_enable=1
 on property:sys.usb.config=bicr && property:vendor.usb.acm_enable=0
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums"
     write /config/usb_gadget/g1/idProduct ${vendor.usb.pid}
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/cdrom 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/file "/dev/block/loop0"
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file "/dev/block/loop0"
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f2
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
     setprop sys.usb.state ${sys.usb.config}
@@ -675,9 +671,9 @@ property:vendor.usb.acm_enable=1
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums_adb_acm"
     write /config/usb_gadget/g1/idProduct ${vendor.usb.pid}
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/cdrom 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/file "/dev/block/loop0"
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file "/dev/block/loop0"
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port0} /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/acm.gs${vendor.usb.acm_port1} /config/usb_gadget/g1/configs/b.1/f4
@@ -690,9 +686,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=bicr,adb && \
 property:vendor.usb.acm_enable=0
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ums_adb"
     write /config/usb_gadget/g1/idProduct ${vendor.usb.pid}
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/cdrom 1
-    write /config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/file "/dev/block/loop0"
-    symlink /config/usb_gadget/g1/functions/mass_storage.usb0 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file "/dev/block/loop0"
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
