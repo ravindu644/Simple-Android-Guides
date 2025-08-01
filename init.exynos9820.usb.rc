@@ -1,26 +1,47 @@
 on early-init
 
 on post-fs
-    mkdir /config/usb_gadget/g1
-    mkdir /config/usb_gadget/g1/strings/0x409
-    mkdir /config/usb_gadget/g1/configs/b.1
-    mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409
-    mkdir /config/usb_gadget/g1/functions/acm.0
-    mkdir /config/usb_gadget/g1/functions/dm.0
-    mkdir /config/usb_gadget/g1/functions/dm1.0
-    mkdir /config/usb_gadget/g1/functions/rndis.0
-    mkdir /config/usb_gadget/g1/functions/conn_gadget.0
-    mkdir /config/usb_gadget/g1/functions/midi.0
-    mkdir /config/usb_gadget/g1/functions/accessory.0
-    mkdir /config/usb_gadget/g1/functions/audio_source.0
-    mkdir /config/usb_gadget/g1/functions/ncm.0
-    mkdir /config/usb_gadget/g1/functions/ss_mon.0
+    # USB Vendor ID for Samsung Electronics
+    setprop vendor.usb.vid "0x04E8"
 
-    # adb function
+    # Creating the main gadget
+    mkdir /config/usb_gadget/g1 0770 shell shell
+
+    # Setting it up
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/bcdDevice 0x0223
+
+    # This is the USB 3.0 Standards
+    write /config/usb_gadget/g1/bcdUSB 0x0300
+
+    # 0x409 = English (United States)
+    mkdir /config/usb_gadget/g1/strings/0x409 0770
+    write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
+    write /config/usb_gadget/g1/strings/0x409/manufacturer "SAMSUNG"
+    write /config/usb_gadget/g1/strings/0x409/product "SAMSUNG_Android"
+
+    mkdir /config/usb_gadget/g1/configs/b.1
+    mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409    
+
+    # Begin creating functions
+    # Let's start with nethunter's functions first
+
+    # ADB
     mkdir /config/usb_gadget/g1/functions/ffs.adb 0770 shell shell
     mkdir /dev/usb-ffs 0775 shell shell
     mkdir /dev/usb-ffs/adb 0770 shell shell
-    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000 
+
+    # HID
+    mkdir /config/usb_gadget/g1/functions/hid.0
+    mkdir /config/usb_gadget/g1/functions/hid.1
+
+    # Mass Storage
+    mkdir /config/usb_gadget/g1/functions/mass_storage.0
+    mkdir /config/usb_gadget/g1/functions/mass_storage.0/lun.0
+
+    # RNDIS
+    mkdir /config/usb_gadget/g1/functions/rndis.gs4
 
     # mtp function
     mkdir /config/usb_gadget/g1/functions/ffs.mtp
@@ -30,7 +51,26 @@ on post-fs
     # ptp function
     mkdir /config/usb_gadget/g1/functions/ffs.ptp 0770 shell shell
     mkdir /dev/usb-ffs/ptp 0770 mtp mtp
-    mount functionfs ptp /dev/usb-ffs/ptp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1
+    mount functionfs ptp /dev/usb-ffs/ptp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1    
+
+    # USB serial port (ttyACM0)
+    mkdir /config/usb_gadget/g1/functions/acm.gs0 
+
+    # Samsung Specific ? (DeX)
+    mkdir /config/usb_gadget/g1/functions/conn_gadget.0
+
+    # Musical MIDI over USB
+    mkdir /config/usb_gadget/g1/functions/midi.0
+
+    # Android Open Accessory mode (e.g., Arduino)
+    mkdir /config/usb_gadget/g1/functions/accessory.0
+
+    # Send audio over USB (Android Auto, DACs)
+    mkdir /config/usb_gadget/g1/functions/audio_source.0
+    
+    # Probably some scamsung thing
+    mkdir /config/usb_gadget/g1/functions/ss_mon.0    
+
 
 on charger && property:ro.debuggable=1
     write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
