@@ -69,7 +69,53 @@ on post-fs
     mkdir /config/usb_gadget/g1/functions/audio_source.0
     
     # Probably some scamsung thing
-    mkdir /config/usb_gadget/g1/functions/ss_mon.0    
+    mkdir /config/usb_gadget/g1/functions/ss_mon.0
+    
+on boot
+    # Enable USB gadget configfs
+    setprop sys.usb.configfs 2
+
+    # Set USB controller device node
+    setprop sys.usb.controller "11201000.usb0"
+    setprop vendor.usb.controller "11201000.usb0"
+
+    # Disable asynchronous I/O compatibility for FunctionFS (optional, keep)
+    setprop sys.usb.ffs.aio_compat 0
+
+    # Enable one ACM (USB Serial) port
+    setprop vendor.usb.acm_cnt 1
+    setprop vendor.usb.acm_port0 0
+    setprop vendor.usb.acm_port1 ""
+    setprop vendor.usb.acm_enable 1
+
+    # Set CPU affinity for MTP function (optional, but can improve performance)
+    write /sys/class/android_usb/android0/f_mtp/cpu_mask 0x80
+
+    # Enable continuous MTP receive mode (optional)
+    write /sys/module/usb_f_mtp/parameters/mtp_rx_cont 1
+
+    # Set permissions and ownership for USB serial number
+    chmod 0664 /sys/class/android_usb/android0/iSerial
+    chown root system /sys/class/android_usb/android0/iSerial
+
+    # Set permissions and ownership for USB serial gadget devices
+    chown system radio /dev/ttyGS0
+    chmod 0660 /dev/ttyGS0
+    chown system radio /dev/ttyGS1
+    chmod 0660 /dev/ttyGS1
+
+    # USB OTG SD card hot plug detection polling interval
+    write /sys/module/block/parameters/events_dfl_poll_msecs 1000
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "Conf 1"
+
+    # 900 mAh
+    write /config/usb_gadget/g1/configs/b.1/MaxPower 900
+
+    mkdir /config/usb_gadget/g1/os_desc 0770 shell shell
+    write /config/usb_gadget/g1/os_desc/b_vendor_code 0x1
+    write /config/usb_gadget/g1/os_desc/qw_sign "MSFT100"
+    write /config/usb_gadget/g1/os_desc/use 1
 
 
 on charger && property:ro.debuggable=1
@@ -80,31 +126,6 @@ on charger && property:ro.debuggable=1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
     setprop sys.usb.configfs 2
     setprop sys.usb.config adb
-
-on boot
-    write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
-    write /config/usb_gadget/g1/strings/0x409/manufacturer "SAMSUNG"
-    write /config/usb_gadget/g1/strings/0x409/product "SAMSUNG_Android"
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "Conf 1"
-    write /config/usb_gadget/g1/configs/b.1/MaxPower 900
-    write /config/usb_gadget/g1/os_desc/b_vendor_code 0x1
-    write /config/usb_gadget/g1/os_desc/qw_sign "MSFT100"
-    write /config/usb_gadget/g1/os_desc/use 1
-    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/ffs.ptp
-    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
-    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
-    symlink /config/usb_gadget/g1/functions/rndis.0 /config/usb_gadget/g1/configs/b.1/rndis.0
-    symlink /config/usb_gadget/g1/functions/dm.0 /config/usb_gadget/g1/configs/b.1/dm.0
-    symlink /config/usb_gadget/g1/functions/dm1.0 /config/usb_gadget/g1/configs/b.1/dm1.0    
-    symlink /config/usb_gadget/g1/functions/conn_gadget.0 /config/usb_gadget/g1/configs/b.1/conn_gadget.0
-    symlink /config/usb_gadget/g1/functions/midi.0 /config/usb_gadget/g1/configs/b.1/midi.0
-    symlink /config/usb_gadget/g1/functions/accessory.0 /config/usb_gadget/g1/configs/b.1/accessory.0
-    symlink /config/usb_gadget/g1/functions/audio_source.0 /config/usb_gadget/g1/configs/b.1/audio_source.0
-    symlink /config/usb_gadget/g1/functions/ncm.0 /config/usb_gadget/g1/configs/b.1/ncm.0
-    symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
-    setprop sys.usb.configfs 2
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none
