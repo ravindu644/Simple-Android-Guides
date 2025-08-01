@@ -191,25 +191,26 @@ on property:sys.usb.config=hid
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
     rm /config/usb_gadget/g1/configs/b.1/f*
 
-    # Write HID 0 report descriptors (Keyboard)
-    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+    # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
-    write /config/usb_gadget/g1/functions/hid.0/subclass 1
     write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
 
-    # Write HID 1 report descriptors (Mouse)
-    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
-    write /config/usb_gadget/g1/functions/hid.1/protocol 1
-    write /config/usb_gadget/g1/functions/hid.1/subclass 2
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
     write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
 
+    # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
 
+    # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-
     setprop sys.usb.state ${sys.usb.config}
 
 # HID + ADB
@@ -217,39 +218,447 @@ on property:sys.usb.config=hid,adb
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_adb"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x046d
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
-    setprop vendor.usb.state ${sys.usb.config}
-
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
     rm /config/usb_gadget/g1/configs/b.1/f*
 
-    # Write HID 0 report descriptors (Keyboard)
-    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+    # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
-    write /config/usb_gadget/g1/functions/hid.0/subclass 1
     write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
 
-    # Write HID 1 report descriptors (Mouse)
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
     write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
-    write /config/usb_gadget/g1/functions/hid.1/protocol 1
-    write /config/usb_gadget/g1/functions/hid.1/subclass 2
-    write /config/usb_gadget/g1/functions/hid.1/report_length 4    
 
+    # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f3
 
+    # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-    
     setprop sys.usb.state ${sys.usb.config}
 
+# MASS STORAGE
+on property:sys.usb.config=mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage"
+    write /config/usb_gadget/g1/idProduct 0x685B
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# MASS STORAGE + ADB
+on property:sys.usb.config=mass_storage,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage_adb"
+    write /config/usb_gadget/g1/idProduct 0x6860
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS
+on property:sys.usb.config=rndis
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis"
+    write /config/usb_gadget/g1/idProduct 0x6863
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + ADB
+on property:sys.usb.config=rndis,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_adb"
+    write /config/usb_gadget/g1/idProduct 0x6864
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# HID + MASS STORAGE
+on property:sys.usb.config=hid,mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage"
+    write /config/usb_gadget/g1/idProduct 0xc317
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f3
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# HID + MASS STORAGE + ADB
+on property:sys.usb.config=hid,mass_storage,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage_adb"
+    write /config/usb_gadget/g1/idProduct 0x6860
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f4
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + HID
+on property:sys.usb.config=rndis,hid
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid"
+    write /config/usb_gadget/g1/idProduct 0xc318
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f3
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + HID + ADB
+on property:sys.usb.config=rndis,hid,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_adb"
+    write /config/usb_gadget/g1/idProduct 0x6864
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f4
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + MASS STORAGE
+on property:sys.usb.config=rndis,mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage"
+    write /config/usb_gadget/g1/idProduct 0x6865
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f2
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + MASS STORAGE + ADB
+on property:sys.usb.config=rndis,mass_storage,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_adb"
+    write /config/usb_gadget/g1/idProduct 0x6866
+    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f3
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + MASS STORAGE + HID
+on property:sys.usb.config=rndis,mass_storage,hid
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_hid"
+    write /config/usb_gadget/g1/idProduct 0xc319
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f4
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# RNDIS + MASS STORAGE + HID + ADB
+on property:sys.usb.config=rndis,mass_storage,hid,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hid,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_hid_adb"
+    write /config/usb_gadget/g1/idProduct 0x6867
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    write /config/usb_gadget/g1/functions/hid.0/report_desc "\x05\x01\x09\x06\xa1\x01\x05\x07\x19\xe0\x29\xe7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x03\x95\x05\x75\x01\x05\x08\x19\x01\x29\x05\x91\x02\x95\x01\x75\x03\x91\x03\x95\x06\x75\x08\x15\x00\x25\x65\x05\x07\x19\x00\x29\x65\x81\x00\xc0"
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    write /config/usb_gadget/g1/functions/hid.1/report_desc "\x05\x01\x09\x02\xa1\x01\x09\x01\xa1\x00\x05\x09\x19\x01\x29\x05\x15\x00\x25\x01\x95\x05\x75\x01\x81\x02\x95\x01\x75\x03\x81\x01\x05\x01\x09\x30\x09\x31\x09\x38\x15\x81\x25\x7f\x75\x08\x95\x03\x81\x06\xc0\xc0"
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f4
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f5
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 #####################################################
 #       Ends Nethunter ConfigFS Functions           #
