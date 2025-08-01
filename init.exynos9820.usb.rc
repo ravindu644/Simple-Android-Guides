@@ -150,6 +150,19 @@ on charger
 
     setprop sys.usb.config adb
 
+# when sys.usb.config=adb, run this
+on property:sys.usb.config=adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
+    write /config/usb_gadget/g1/idProduct 0x6860
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}    
+
 # Used to disable USB when switching states
 on property:sys.usb.config=none
     write /sys/class/android_usb/android0/enable 0
@@ -161,17 +174,62 @@ on property:sys.usb.config=none
     write /config/usb_gadget/g1/bDeviceProtocol 0
     setprop sys.usb.state ${sys.usb.config}
 
+#####################################################
+#       Begins Nethunter ConfigFS Functions         #
+#####################################################
 
-on property:sys.usb.config=adb
-    start adbd
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
-    write /sys/class/android_usb/android0/enable 0
-    write /config/usb_gadget/g1/idProduct 0x685d
-    write /config/usb_gadget/g1/idVendor 0x04e8
-    write /sys/class/android_usb/android0/functions ${sys.usb.config}
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
+# Only HID
+on property:sys.usb.config=hid
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid"
+    write /config/usb_gadget/g1/idProduct 0xc316
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*    
+
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
+
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+
     setprop sys.usb.state ${sys.usb.config}
+
+# HID + ADB
+on property:sys.usb.config=hid,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_adb"
+    write /config/usb_gadget/g1/idProduct 0x6860
+    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    setprop vendor.usb.state ${sys.usb.config}
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/f*    
+
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f3
+
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    
+    setprop sys.usb.state ${sys.usb.config}
+
+
+#####################################################
+#       Ends Nethunter ConfigFS Functions           #
+#####################################################
 
 on property:sys.usb.config=mtp
     write /sys/class/android_usb/android0/enable 0
