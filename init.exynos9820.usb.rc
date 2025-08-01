@@ -1,6 +1,6 @@
 on early-init
 
-on init
+on post-fs
     mkdir /config/usb_gadget/g1
     mkdir /config/usb_gadget/g1/strings/0x409
     mkdir /config/usb_gadget/g1/configs/b.1
