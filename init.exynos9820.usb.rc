@@ -183,7 +183,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
     rm /config/usb_gadget/g1/configs/b.1/acm.0
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
-    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0     
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0      
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
@@ -220,7 +221,8 @@ on property:sys.usb.ffs.ready=1 && property:nethunter,sys.usb.config=adb
     rm /config/usb_gadget/g1/configs/b.1/acm.0
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
-    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0     
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0      
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
@@ -254,6 +256,7 @@ on property:sys.usb.config=none
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
     rm /config/usb_gadget/g1/configs/b.1/accessory.0
     rm /config/usb_gadget/g1/configs/b.1/audio_source.0
     rm /config/usb_gadget/g1/configs/b.1/midi.0
@@ -293,6 +296,7 @@ on property:sys.usb.config=nethunter,hid
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -342,6 +346,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,hid,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -389,6 +394,7 @@ on property:sys.usb.config=nethunter,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -434,6 +440,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,mass_storag
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -477,6 +484,7 @@ on property:sys.usb.config=nethunter,rndis
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -513,6 +521,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -547,6 +556,7 @@ on property:sys.usb.config=nethunter,hid,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -606,6 +616,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,hid,mass_st
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -663,6 +674,7 @@ on property:sys.usb.config=nethunter,rndis,hid
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -713,6 +725,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,hid,a
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -761,6 +774,7 @@ on property:sys.usb.config=nethunter,rndis,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -807,6 +821,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,mass_
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -851,6 +866,7 @@ on property:sys.usb.config=nethunter,rndis,hid,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -911,6 +927,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,hid,m
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -969,6 +986,7 @@ on property:sys.usb.config=nethunter,acm,ecm
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
@@ -1006,6 +1024,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,adb
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
@@ -1041,6 +1060,7 @@ on property:sys.usb.config=nethunter,acm,ecm,hid
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1092,6 +1112,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,hid
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1141,6 +1162,7 @@ on property:sys.usb.config=nethunter,acm,ecm,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
@@ -1187,6 +1209,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,mas
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
@@ -1231,6 +1254,7 @@ on property:sys.usb.config=nethunter,acm,ecm,hid,mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1291,6 +1315,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,hid
     rm /config/usb_gadget/g1/configs/b.1/ecm.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1352,6 +1377,7 @@ on property:sys.usb.config=mass_storage
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -1403,6 +1429,7 @@ on property:sys.usb.config=mtp
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1463,6 +1490,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1521,6 +1549,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1577,6 +1606,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1631,6 +1661,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1687,6 +1718,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1743,6 +1775,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1804,6 +1837,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1884,6 +1918,7 @@ on property:sys.usb.config=rndis,dm
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -1914,6 +1949,7 @@ on property:sys.usb.config=rndis,acm,dm
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -1946,6 +1982,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,acm,dm,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -1977,6 +2014,7 @@ on property:sys.usb.config=acm,dm
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
@@ -2008,6 +2046,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=acm,dm,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
@@ -2038,6 +2077,7 @@ on property:sys.usb.config=accessory
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/accessory.0 /config/usb_gadget/g1/configs/b.1/accessory.0
@@ -2069,6 +2109,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/accessory.0 /config/usb_gadget/g1/configs/b.1/accessory.0
@@ -2099,6 +2140,7 @@ on property:sys.usb.config=audio_source
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/audio_source.0 /config/usb_gadget/g1/configs/b.1/audio_source.0
@@ -2130,6 +2172,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=audio_source,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/audio_source.0 /config/usb_gadget/g1/configs/b.1/audio_source.0
@@ -2160,6 +2203,7 @@ on property:sys.usb.config=accessory,audio_source
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/accessory.0 /config/usb_gadget/g1/configs/b.1/accessory.0
@@ -2192,6 +2236,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,audio_sourc
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/accessory.0 /config/usb_gadget/g1/configs/b.1/accessory.0
@@ -2223,6 +2268,7 @@ on property:sys.usb.config=midi
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/midi.0 /config/usb_gadget/g1/configs/b.1/midi.0
@@ -2254,6 +2300,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=midi,adb
     rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
     rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
     rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0 
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/midi.0 /config/usb_gadget/g1/configs/b.1/midi.0
