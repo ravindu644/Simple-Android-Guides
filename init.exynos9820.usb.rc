@@ -257,8 +257,8 @@ on property:sys.usb.config=mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage"
-    write /config/usb_gadget/g1/idProduct 0x685B
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/idProduct 0x168b
+    write /config/usb_gadget/g1/idVendor 0x9051
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -267,7 +267,12 @@ on property:sys.usb.config=mass_storage
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
@@ -286,8 +291,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0x6860
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/idProduct 0x168b
+    write /config/usb_gadget/g1/idVendor 0x9051
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -296,7 +301,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f1
@@ -313,8 +323,8 @@ on property:sys.usb.config=rndis
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis"
-    write /config/usb_gadget/g1/idProduct 0x6863
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/idProduct 0x0525
+    write /config/usb_gadget/g1/idVendor 0xa4a2
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -338,8 +348,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_adb"
-    write /config/usb_gadget/g1/idProduct 0x6864
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/idProduct 0x0525
+    write /config/usb_gadget/g1/idVendor 0xa4a3
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -361,7 +371,7 @@ on property:sys.usb.config=hid,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage"
-    write /config/usb_gadget/g1/idProduct 0xc317
+    write /config/usb_gadget/g1/idProduct 0xc318
     write /config/usb_gadget/g1/idVendor 0x046d
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
@@ -383,7 +393,12 @@ on property:sys.usb.config=hid,mass_storage
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
@@ -404,7 +419,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0x6860
+    write /config/usb_gadget/g1/idProduct 0xc319
     write /config/usb_gadget/g1/idVendor 0x046d
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
@@ -426,7 +441,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f1
@@ -445,8 +465,8 @@ on property:sys.usb.config=rndis,hid
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid"
-    write /config/usb_gadget/g1/idProduct 0xc318
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct 0xa4a6
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -484,8 +504,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_adb"
-    write /config/usb_gadget/g1/idProduct 0x6864
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct 0xa4a7
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -520,9 +540,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
 on property:sys.usb.config=rndis,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage"
-    write /config/usb_gadget/g1/idProduct 0x6865
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage"
+    write /config/usb_gadget/g1/idProduct 0xa4a4
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -531,7 +551,12 @@ on property:sys.usb.config=rndis,mass_storage
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
@@ -550,9 +575,9 @@ on property:sys.usb.config=rndis,mass_storage,adb
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0x6866
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage_adb"
+    write /config/usb_gadget/g1/idProduct 0xa4a5
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -561,7 +586,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
@@ -578,9 +608,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
 on property:sys.usb.config=rndis,mass_storage,hid
     setprop vendor.usb.state ${sys.usb.config}
 
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_hid"
-    write /config/usb_gadget/g1/idProduct 0xc319
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage"
+    write /config/usb_gadget/g1/idProduct 0xa4a8
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -601,7 +631,12 @@ on property:sys.usb.config=rndis,mass_storage,hid
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
@@ -622,9 +657,9 @@ on property:sys.usb.config=rndis,mass_storage,hid,adb
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
 
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_storage_hid_adb"
-    write /config/usb_gadget/g1/idProduct 0x6867
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage_adb"
+    write /config/usb_gadget/g1/idProduct 0xa4a9
+    write /config/usb_gadget/g1/idVendor 0x0525
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -645,7 +680,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hi
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file /path/to/your/storage.img
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
