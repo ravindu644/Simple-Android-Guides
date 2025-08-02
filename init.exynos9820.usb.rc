@@ -60,6 +60,9 @@ on post-fs
     # USB serial port (ttyACM0)
     mkdir /config/usb_gadget/g1/functions/acm.0
 
+    # ECM (Ethernet control module)
+    mkdir /config/usb_gadget/g1/functions/ecm.0    
+
     # Samsung Specific ? (DeX)
     mkdir /config/usb_gadget/g1/functions/conn_gadget.0
 
@@ -942,6 +945,386 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,hid,m
 
     write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
     setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM (For Mac OS Networking)
+on property:sys.usb.config=nethunter,acm,ecm
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + ADB
+on property:sys.usb.config=nethunter,acm,ecm,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_adb"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + HID
+on property:sys.usb.config=nethunter,acm,ecm,hid
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_hid"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    copy /vendor/firmware/hid/keyboard-descriptor.bin /config/usb_gadget/g1/functions/hid.0/report_desc
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    copy /vendor/firmware/hid/mouse-descriptor.bin /config/usb_gadget/g1/functions/hid.1/report_desc
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/hid.1
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + HID + ADB
+on property:sys.usb.config=nethunter,acm,ecm,hid,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,hid,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_hid_adb"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    copy /vendor/firmware/hid/keyboard-descriptor.bin /config/usb_gadget/g1/functions/hid.0/report_desc
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    copy /vendor/firmware/hid/mouse-descriptor.bin /config/usb_gadget/g1/functions/hid.1/report_desc
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/hid.1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + Mass Storage
+on property:sys.usb.config=nethunter,acm,ecm,mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_storage"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure Mass Storage function
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + Mass Storage + ADB
+on property:sys.usb.config=nethunter,acm,ecm,mass_storage,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,mass_storage,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_storage_adb"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure Mass Storage function
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + HID + Mass Storage
+on property:sys.usb.config=nethunter,acm,ecm,hid,mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_hid_storage"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    copy /vendor/firmware/hid/keyboard-descriptor.bin /config/usb_gadget/g1/functions/hid.0/report_desc
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    copy /vendor/firmware/hid/mouse-descriptor.bin /config/usb_gadget/g1/functions/hid.1/report_desc
+
+    # Configure Mass Storage function
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/hid.1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+# ACM + ECM + HID + Mass Storage + ADB
+on property:sys.usb.config=nethunter,acm,ecm,hid,mass_storage,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,acm,ecm,hid,mass_storage,adb
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "acm_ecm_hid_storage_adb"
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ecm.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure HID Keyboard function
+    write /config/usb_gadget/g1/functions/hid.0/protocol 1
+    write /config/usb_gadget/g1/functions/hid.0/report_length 8
+    write /config/usb_gadget/g1/functions/hid.0/subclass 1
+    copy /vendor/firmware/hid/keyboard-descriptor.bin /config/usb_gadget/g1/functions/hid.0/report_desc
+
+    # Configure HID Mouse function
+    write /config/usb_gadget/g1/functions/hid.1/protocol 2
+    write /config/usb_gadget/g1/functions/hid.1/report_length 4
+    write /config/usb_gadget/g1/functions/hid.1/subclass 1
+    copy /vendor/firmware/hid/mouse-descriptor.bin /config/usb_gadget/g1/functions/hid.1/report_desc
+
+    # Configure Mass Storage function
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/acm.0 /config/usb_gadget/g1/configs/b.1/acm.0
+    symlink /config/usb_gadget/g1/functions/ecm.0 /config/usb_gadget/g1/configs/b.1/ecm.0
+    symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
+    symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/hid.1
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}    
 
 #####################################################
 #       Ends Nethunter ConfigFS Functions           #
