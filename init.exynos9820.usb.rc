@@ -4,7 +4,11 @@ on post-fs
     # USB Vendor ID for Samsung Electronics
     setprop vendor.usb.vid "0x04E8"
 
-     # Creating the main gadget
+    # Attempt -> Fix ADB
+    mkdir /dev/usb-ffs 0775 shell shell
+    mkdir /dev/usb-ffs/adb 0770 shell shell    
+
+    # Creating the main gadget
     mkdir /config/usb_gadget/g1 0770 shell shell
 
     # Setting it up
@@ -26,21 +30,8 @@ on post-fs
     # Begin creating functions
     # Let's start with nethunter's functions first
 
-    # adb function
-    mkdir /config/usb_gadget/g1/functions/ffs.adb 0770 shell shell
-    mkdir /dev/usb-ffs 0775 shell shell
-    mkdir /dev/usb-ffs/adb 0770 shell shell
-    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
-
-    # mtp function
-    mkdir /config/usb_gadget/g1/functions/ffs.mtp
-    mkdir /dev/usb-ffs/mtp 0770 mtp mtp
-    mount functionfs mtp /dev/usb-ffs/mtp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1
-
-    # ptp function
-    mkdir /config/usb_gadget/g1/functions/ffs.ptp 0770 shell shell
-    mkdir /dev/usb-ffs/ptp 0770 mtp mtp
-    mount functionfs ptp /dev/usb-ffs/ptp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1    
+    # ADB
+    mkdir /config/usb_gadget/g1/functions/ffs.adb
 
     # HID
     mkdir /config/usb_gadget/g1/functions/hid.0
@@ -53,16 +44,26 @@ on post-fs
     # RNDIS
     mkdir /config/usb_gadget/g1/functions/rndis.gs4
 
+    # mtp and ptp function
+    mkdir /config/usb_gadget/g1/functions/ffs.mtp
+    write /config/usb_gadget/g1/functions/ffs.mtp/os_desc/interface.MTP/compatible_id "MTP"
+    mkdir /config/usb_gadget/g1/functions/ss_mon.mtp
+    mkdir /config/usb_gadget/g1/functions/ss_mon.ptp
+
     mkdir /dev/usb-ffs/mtp 0770 mtp mtp
     mkdir /dev/usb-ffs/ptp 0770 mtp mtp
 
+    # FunctionFS for ADB, MTP, PTP
+    mount functionfs adb /dev/usb-ffs/adb rmode=0770,fmode=0660,uid=2000,gid=2000,no_disconnect=1
+    mount functionfs mtp /dev/usb-ffs/mtp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1
+    mount functionfs ptp /dev/usb-ffs/ptp rmode=0770,fmode=0660,uid=1024,gid=1024,no_disconnect=1    
+
+
     # USB serial port (ttyACM0)
-    mkdir /config/usb_gadget/g1/functions/acm.0
+    mkdir /config/usb_gadget/g1/functions/acm.gs0 
 
     # Samsung Specific ? (DeX)
     mkdir /config/usb_gadget/g1/functions/conn_gadget.0
-    mkdir /config/usb_gadget/g1/functions/dm.0
-    mkdir /config/usb_gadget/g1/functions/dm1.0    
 
     # Musical MIDI over USB
     mkdir /config/usb_gadget/g1/functions/midi.0
@@ -155,45 +156,17 @@ on charger
 
     setprop sys.usb.config adb
 
-on boot
-    symlink /config/usb_gadget/g1/functions/dm.0 /config/usb_gadget/g1/configs/b.1/dm.0
-    symlink /config/usb_gadget/g1/functions/dm1.0 /config/usb_gadget/g1/configs/b.1/dm1.0
-    symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
-    setprop sys.usb.configfs 2        
-
 # when sys.usb.config=adb, run this
 on property:sys.usb.config=adb
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
-
-    write /sys/class/android_usb/android0/enable 0
-
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
-
-    write /config/usb_gadget/g1/idProduct 0x685d
-    write /config/usb_gadget/g1/idVendor 0x04e8
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
-
-    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
-    
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1    
-
+    write /config/usb_gadget/g1/idProduct 0x6860
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ss_mon.etc /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     setprop sys.usb.state ${sys.usb.config}    
 
 # Used to disable USB when switching states
@@ -202,20 +175,6 @@ on property:sys.usb.config=none
     stop adbd
     setprop sys.usb.ffs.ready 0
     stop ss_conn_daemon2_service
-
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
-
     write /config/usb_gadget/g1/bDeviceClass 0
     write /config/usb_gadget/g1/bDeviceSubClass 0
     write /config/usb_gadget/g1/bDeviceProtocol 0
@@ -228,7 +187,6 @@ on property:sys.usb.config=none
 # Only HID
 on property:sys.usb.config=hid
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0    
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid"
     write /config/usb_gadget/g1/idProduct 0xc316
@@ -237,18 +195,7 @@ on property:sys.usb.config=hid
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -269,9 +216,8 @@ on property:sys.usb.config=hid
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # HID + ADB
 on property:sys.usb.config=hid,adb
@@ -279,7 +225,6 @@ on property:sys.usb.config=hid,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_adb"
     write /config/usb_gadget/g1/idProduct 0x6860
@@ -288,18 +233,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -321,14 +255,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # MASS STORAGE
 on property:sys.usb.config=mass_storage
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage"
     write /config/usb_gadget/g1/idProduct 0x168b
@@ -337,18 +269,7 @@ on property:sys.usb.config=mass_storage
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -365,9 +286,8 @@ on property:sys.usb.config=mass_storage
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # MASS STORAGE + ADB
 on property:sys.usb.config=mass_storage,adb
@@ -375,7 +295,6 @@ on property:sys.usb.config=mass_storage,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage_adb"
     write /config/usb_gadget/g1/idProduct 0x168b
@@ -384,18 +303,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -413,14 +321,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS
 on property:sys.usb.config=rndis
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis"
     write /config/usb_gadget/g1/idProduct 0x0525
@@ -429,18 +335,7 @@ on property:sys.usb.config=rndis
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
@@ -448,9 +343,8 @@ on property:sys.usb.config=rndis
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + ADB
 on property:sys.usb.config=rndis,adb
@@ -458,7 +352,6 @@ on property:sys.usb.config=rndis,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_adb"
     write /config/usb_gadget/g1/idProduct 0x0525
@@ -467,18 +360,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
@@ -487,14 +369,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # HID + MASS STORAGE
 on property:sys.usb.config=hid,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage"
     write /config/usb_gadget/g1/idProduct 0xc318
@@ -503,18 +383,7 @@ on property:sys.usb.config=hid,mass_storage
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -545,9 +414,8 @@ on property:sys.usb.config=hid,mass_storage
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # HID + MASS STORAGE + ADB
 on property:sys.usb.config=hid,mass_storage,adb
@@ -555,7 +423,6 @@ on property:sys.usb.config=hid,mass_storage,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage_adb"
     write /config/usb_gadget/g1/idProduct 0xc319
@@ -564,18 +431,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -607,14 +463,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + HID
 on property:sys.usb.config=rndis,hid
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid"
     write /config/usb_gadget/g1/idProduct 0xa4a6
@@ -623,18 +477,7 @@ on property:sys.usb.config=rndis,hid
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -656,9 +499,8 @@ on property:sys.usb.config=rndis,hid
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + HID + ADB
 on property:sys.usb.config=rndis,hid,adb
@@ -666,7 +508,6 @@ on property:sys.usb.config=rndis,hid,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_adb"
     write /config/usb_gadget/g1/idProduct 0xa4a7
@@ -675,18 +516,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -709,14 +539,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE
 on property:sys.usb.config=rndis,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage"
     write /config/usb_gadget/g1/idProduct 0xa4a4
@@ -725,18 +553,7 @@ on property:sys.usb.config=rndis,mass_storage
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -754,9 +571,8 @@ on property:sys.usb.config=rndis,mass_storage
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + ADB
 on property:sys.usb.config=rndis,mass_storage,adb
@@ -764,7 +580,6 @@ on property:sys.usb.config=rndis,mass_storage,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage_adb"
     write /config/usb_gadget/g1/idProduct 0xa4a5
@@ -773,18 +588,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
@@ -803,14 +607,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + HID
 on property:sys.usb.config=rndis,mass_storage,hid
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage"
     write /config/usb_gadget/g1/idProduct 0xa4a8
@@ -819,18 +621,7 @@ on property:sys.usb.config=rndis,mass_storage,hid
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -862,9 +653,8 @@ on property:sys.usb.config=rndis,mass_storage,hid
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + HID + ADB
 on property:sys.usb.config=rndis,mass_storage,hid,adb
@@ -872,7 +662,6 @@ on property:sys.usb.config=rndis,mass_storage,hid,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage_adb"
     write /config/usb_gadget/g1/idProduct 0xa4a9
@@ -881,18 +670,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hi
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
     # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -925,9 +703,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hi
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 #####################################################
 #       Ends Nethunter ConfigFS Functions           #
@@ -946,26 +723,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,hi
 # MTP mode -> Augmented with HID and Mass Storage
 on property:sys.usb.config=mtp
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -989,18 +752,17 @@ on property:sys.usb.config=mtp
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Link functions: Original OEM + Augmented
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/acm.0/config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/acm.gs0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f5
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f6
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f7
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # MTP + ADB mode -> Augmented with HID and Mass Storage
 on property:sys.usb.config=mtp,adb
@@ -1008,26 +770,12 @@ on property:sys.usb.config=mtp,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_adb_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1051,9 +799,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
     # Link functions: Original OEM + Augmented
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/acm.0/config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/acm.gs0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/f5
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f6
@@ -1061,33 +809,18 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f8
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # PTP mode -> Augmented with HID and Mass Storage
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ptp_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6865
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1110,15 +843,14 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
-    symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f4
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # PTP + ADB mode -> Augmented with HID and Mass Storage
 on property:sys.usb.config=ptp,adb
@@ -1126,26 +858,12 @@ on property:sys.usb.config=ptp,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ptp_adb_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6866
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-    
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1168,40 +886,25 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
-    symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f5
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # Samsung Charging mode -> Augmented with HID and Mass Storage
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "charging_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1230,9 +933,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f4
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # Samsung Charging + ADB mode -> Augmented
 on property:sys.usb.config=sec_charging,adb
@@ -1240,26 +942,12 @@ on property:sys.usb.config=sec_charging,adb
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging,adb
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "charging_adb_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04E8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1282,42 +970,27 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging,adb
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
-    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/f2
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/hid.1 /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f5
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # DeX / Smart Switch mode -> Augmented
 # This is the most complex one, preserving all original functions.
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget
     start ss_conn_daemon2_service
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "dex_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04e8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1340,9 +1013,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/acm.0/config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/acm.gs0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/conn_gadget.0 /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/f5
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/f6
@@ -1350,9 +1023,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f8
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # DeX / Smart Switch + ADB mode -> Augmented
 on property:sys.usb.config=mtp,conn_gadget,adb
@@ -1361,26 +1033,12 @@ on property:sys.usb.config=mtp,conn_gadget,adb
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget,adb
     start ss_conn_daemon2_service
     setprop vendor.usb.state ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 0  
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "dex_adb_hid_storage"
     write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04e8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
-    
-    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
-    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
-    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/f*
 
     # Configure HID Keyboard function
     write /config/usb_gadget/g1/functions/hid.0/protocol 1
@@ -1403,9 +1061,9 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget,adb
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
 
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/acm.0/config/usb_gadget/g1/configs/b.1/f3
+    symlink /config/usb_gadget/g1/functions/acm.gs0 /config/usb_gadget/g1/configs/b.1/f3
     symlink /config/usb_gadget/g1/functions/conn_gadget.0 /config/usb_gadget/g1/configs/b.1/f4
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f5
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/f6
@@ -1414,9 +1072,8 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget,adb
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/f9
 
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 # Handler for carrier-specific charging modes (redirect to sec_charging)
 on property:sys.usb.config=vzw_charging
@@ -1449,7 +1106,7 @@ on property:sys.usb.config=rndis,dm
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=rndis,acm,dm
     write /sys/class/android_usb/android0/enable 0
@@ -1458,7 +1115,7 @@ on property:sys.usb.config=rndis,acm,dm
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=rndis,acm,dm,adb
     start adbd
@@ -1469,7 +1126,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,acm,dm,adb
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=acm,dm
     write /sys/class/android_usb/android0/enable 0
@@ -1478,7 +1135,7 @@ on property:sys.usb.config=acm,dm
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=acm,dm,adb
     start adbd
@@ -1489,7 +1146,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=acm,dm,adb
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory
     write /sys/class/android_usb/android0/enable 0
@@ -1498,7 +1155,7 @@ on property:sys.usb.config=accessory
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory,adb
     start adbd
@@ -1509,7 +1166,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,adb
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=audio_source
     write /sys/class/android_usb/android0/enable 0
@@ -1518,7 +1175,7 @@ on property:sys.usb.config=audio_source
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=audio_source,adb
     start adbd
@@ -1529,7 +1186,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=audio_source,adb
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory,audio_source
     write /sys/class/android_usb/android0/enable 0
@@ -1538,7 +1195,7 @@ on property:sys.usb.config=accessory,audio_source
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory,audio_source,adb
     start adbd
@@ -1549,7 +1206,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,audio_sourc
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=midi
     write /sys/class/android_usb/android0/enable 0
@@ -1558,7 +1215,7 @@ on property:sys.usb.config=midi
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=midi,adb
     start adbd
@@ -1569,4 +1226,4 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=midi,adb
     write /sys/class/android_usb/android0/functions ${sys.usb.config}
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${vendor.usb.state}
+    setprop sys.usb.state ${sys.usb.config}
