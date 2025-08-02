@@ -354,11 +354,11 @@ on property:sys.usb.config=mass_storage
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
@@ -399,11 +399,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
@@ -524,11 +524,11 @@ on property:sys.usb.config=hid,mass_storage
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
@@ -583,11 +583,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
@@ -726,11 +726,11 @@ on property:sys.usb.config=rndis,mass_storage
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -772,11 +772,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -828,11 +828,11 @@ on property:sys.usb.config=rndis,hid,mass_storage
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -888,11 +888,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,mass_storag
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/rndis.gs4
@@ -959,11 +959,11 @@ on property:sys.usb.config=mtp
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Link functions: Original OEM + Augmented
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
@@ -1019,11 +1019,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     # Link functions: Original OEM + Augmented
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
@@ -1077,11 +1077,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/ffs.ptp
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
@@ -1133,11 +1133,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ffs.ptp /config/usb_gadget/g1/configs/b.1/ffs.ptp
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
@@ -1187,11 +1187,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
     symlink /config/usb_gadget/g1/functions/hid.0 /config/usb_gadget/g1/configs/b.1/hid.0
@@ -1243,11 +1243,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=sec_charging,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
     symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
@@ -1299,11 +1299,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
     symlink /config/usb_gadget/g1/functions/ss_mon.mtp /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
@@ -1360,11 +1360,11 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,conn_gadget,adb
     # Configure Mass Storage function
     # IMPORTANT: Replace this path with the actual path to your storage image.
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 1
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
     write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
-    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
 
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/ffs.mtp
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb    
