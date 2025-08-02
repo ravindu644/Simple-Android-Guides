@@ -163,7 +163,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
-    write /config/usb_gadget/g1/idProduct 0x685d
+    write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04e8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
@@ -184,7 +184,6 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
-    symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
 
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
@@ -201,7 +200,7 @@ on property:sys.usb.ffs.ready=1 && property:nethunter,sys.usb.config=adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
-    write /config/usb_gadget/g1/idProduct 0x685d
+    write /config/usb_gadget/g1/idProduct 0x6860
     write /config/usb_gadget/g1/idVendor 0x04e8
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
@@ -222,8 +221,7 @@ on property:sys.usb.ffs.ready=1 && property:nethunter,sys.usb.config=adb
 
     # Enabling part
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
-    symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
-
+    
     # Syncing path
     symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
 
