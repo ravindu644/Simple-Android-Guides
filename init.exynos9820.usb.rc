@@ -192,6 +192,44 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     setprop sys.usb.state ${sys.usb.config}
 
+# NETHUNTER + ADB
+on property:sys.usb.config=nethunter,adb
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:nethunter,sys.usb.config=adb
+
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
+    write /config/usb_gadget/g1/idProduct 0x685d
+    write /config/usb_gadget/g1/idVendor 0x04e8
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ffs.adb
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.0
+    rm /config/usb_gadget/g1/configs/b.1/hid.1
+    rm /config/usb_gadget/g1/configs/b.1/mass_storage.0
+    rm /config/usb_gadget/g1/configs/b.1/rndis.gs4
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0     
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/ffs.adb
+    symlink /config/usb_gadget/g1/functions/ss_mon.0 /config/usb_gadget/g1/configs/b.1/ss_mon.0
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
 # Used to disable USB when switching states and to clean up all functions
 on property:sys.usb.config=none
     # Stop services
@@ -232,12 +270,12 @@ on property:sys.usb.config=none
 #####################################################
 
 # Only HID
-on property:sys.usb.config=hid
+on property:sys.usb.config=nethunter,hid
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid"
-    write /config/usb_gadget/g1/idProduct 0xc316
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -278,15 +316,15 @@ on property:sys.usb.config=hid
     setprop sys.usb.state ${sys.usb.config}
 
 # HID + ADB
-on property:sys.usb.config=hid,adb
+on property:sys.usb.config=nethunter,hid,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_adb"
-    write /config/usb_gadget/g1/idProduct 0x6860
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -328,12 +366,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,adb
     setprop sys.usb.state ${sys.usb.config}
 
 # MASS STORAGE
-on property:sys.usb.config=mass_storage
+on property:sys.usb.config=nethunter,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage"
-    write /config/usb_gadget/g1/idProduct 0x168b
-    write /config/usb_gadget/g1/idVendor 0x9051
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -370,15 +408,15 @@ on property:sys.usb.config=mass_storage
     setprop sys.usb.state ${sys.usb.config}
 
 # MASS STORAGE + ADB
-on property:sys.usb.config=mass_storage,adb
+on property:sys.usb.config=nethunter,mass_storage,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0x168b
-    write /config/usb_gadget/g1/idVendor 0x9051
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -416,12 +454,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS
-on property:sys.usb.config=rndis
+on property:sys.usb.config=nethunter,rndis
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis"
-    write /config/usb_gadget/g1/idProduct 0x0525
-    write /config/usb_gadget/g1/idVendor 0xa4a2
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -449,15 +487,15 @@ on property:sys.usb.config=rndis
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + ADB
-on property:sys.usb.config=rndis,adb
+on property:sys.usb.config=nethunter,rndis,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_adb"
-    write /config/usb_gadget/g1/idProduct 0x0525
-    write /config/usb_gadget/g1/idVendor 0xa4a3
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -486,12 +524,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb
     setprop sys.usb.state ${sys.usb.config}
 
 # HID + MASS STORAGE
-on property:sys.usb.config=hid,mass_storage
+on property:sys.usb.config=nethunter,hid,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage"
-    write /config/usb_gadget/g1/idProduct 0xc318
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -542,15 +580,15 @@ on property:sys.usb.config=hid,mass_storage
     setprop sys.usb.state ${sys.usb.config}
 
 # HID + MASS STORAGE + ADB
-on property:sys.usb.config=hid,mass_storage,adb
+on property:sys.usb.config=nethunter,hid,mass_storage,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,hid,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "hid_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0xc319
-    write /config/usb_gadget/g1/idVendor 0x046d
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -602,12 +640,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=hid,mass_storage,adb
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + HID
-on property:sys.usb.config=rndis,hid
+on property:sys.usb.config=nethunter,rndis,hid
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid"
-    write /config/usb_gadget/g1/idProduct 0xa4a6
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -649,15 +687,15 @@ on property:sys.usb.config=rndis,hid
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + HID + ADB
-on property:sys.usb.config=rndis,hid,adb
+on property:sys.usb.config=nethunter,rndis,hid,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,hid,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_adb"
-    write /config/usb_gadget/g1/idProduct 0xa4a7
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -700,12 +738,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,adb
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE
-on property:sys.usb.config=rndis,mass_storage
+on property:sys.usb.config=nethunter,rndis,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage"
-    write /config/usb_gadget/g1/idProduct 0xa4a4
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -743,15 +781,15 @@ on property:sys.usb.config=rndis,mass_storage
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + ADB
-on property:sys.usb.config=rndis,mass_storage,adb
+on property:sys.usb.config=nethunter,rndis,mass_storage,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_mass_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0xa4a5
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -790,12 +828,12 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,mass_storage,ad
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + HID
-on property:sys.usb.config=rndis,hid,mass_storage
+on property:sys.usb.config=nethunter,rndis,hid,mass_storage
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage"
-    write /config/usb_gadget/g1/idProduct 0xa4a8
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -847,15 +885,15 @@ on property:sys.usb.config=rndis,hid,mass_storage
     setprop sys.usb.state ${sys.usb.config}
 
 # RNDIS + MASS STORAGE + HID + ADB
-on property:sys.usb.config=rndis,hid,mass_storage,adb
+on property:sys.usb.config=nethunter,rndis,hid,mass_storage,adb
     start adbd
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,mass_storage,adb
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=nethunter,rndis,hid,mass_storage,adb
     setprop vendor.usb.state ${sys.usb.config}
 
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_hid_mass_storage_adb"
-    write /config/usb_gadget/g1/idProduct 0xa4a9
-    write /config/usb_gadget/g1/idVendor 0x0525
+    write /config/usb_gadget/g1/idProduct ${offsec.nethunter.idProduct}
+    write /config/usb_gadget/g1/idVendor ${offsec.nethunter.idVendor}
     write /config/usb_gadget/g1/os_desc/use 1
     write /sys/class/udc/${vendor.usb.controller}/device/saving 1
 
@@ -910,6 +948,47 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,hid,mass_storag
 #####################################################
 #       Ends Nethunter ConfigFS Functions           #
 #####################################################
+
+# DEFINES THE DEFAULT MASS STORAGE FUNCTION FOR DRIVEDROID
+# AND IT SHOULD NOT KILL OTHER FUNCTIONS REQUIRED FOR NETHUNTER WHEN RUNNING
+# SO, I NUKED THEM FROM THE "NUKE STEP"
+
+# MASS STORAGE
+on property:sys.usb.config=mass_storage
+    setprop vendor.usb.state ${sys.usb.config}
+
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mass_storage"
+    write /config/usb_gadget/g1/idProduct 0x168b
+    write /config/usb_gadget/g1/idVendor 0x9051
+    write /config/usb_gadget/g1/os_desc/use 1
+    write /sys/class/udc/${vendor.usb.controller}/device/saving 1
+
+    # NUKE STEP: Delete any pre-existing, non-nethunter function links to ensure a clean slate.
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.mtp
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.mtp
+    rm /config/usb_gadget/g1/configs/b.1/acm.0
+    rm /config/usb_gadget/g1/configs/b.1/ss_mon.0
+    rm /config/usb_gadget/g1/configs/b.1/ffs.ptp
+    rm /config/usb_gadget/g1/configs/b.1/conn_gadget.0
+
+    # Configure Mass Storage function
+    # IMPORTANT: Replace this path with the actual path to your storage image.
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file ""    
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom 0
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/inquiry_string "NETUSB"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/nofua "0"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/removable "1"
+    write /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro "0"
+
+    # Enabling part
+    symlink /config/usb_gadget/g1/functions/mass_storage.0 /config/usb_gadget/g1/configs/b.1/mass_storage.0
+
+    # Syncing path
+    symlink /config/usb_gadget/g1/configs/b.1 /config/usb_gadget/g1/os_desc/b.1
+
+    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
 
 
 #####################################################
